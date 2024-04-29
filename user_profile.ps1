@@ -14,9 +14,15 @@ function WSN(){ Set-Location ~\AppData\Local\nvim}
 function WSPS(){ Set-Location 'C:\Workspace\Powershell'}
 
 function WS($folder){
-    if($folder){
-        Set-Location "C:\Workspace\$folder"
-    } else {
-        Set-Location 'C:\Workspace'
+    Set-Location "C:\Workspace\$folder"
+}
+
+Register-ArgumentCompleter -CommandName WS -ParameterName folder -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+
+    Get-ChildItem -Path 'C:\Workspace' -Directory | 
+    Where-Object { $_.Name -like "$wordToComplete*" } | 
+    ForEach-Object {
+        New-Object -Type System.Management.Automation.CompletionResult -ArgumentList $_.Name, $_.Name, 'ParameterValue', $_.Name
     }
 }
